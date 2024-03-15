@@ -1,5 +1,7 @@
-# RiggedSollitare
- A challege project from a University of Alberta Computer Science assignment
+# PythonCardGames
+A challege project from various University of Alberta COMPUT 175 assignments
 
 
-View the assignment_3 pdf file for more information.
+View the assignment pdf files for more information.
+
+This project acted as practice for getting comfortable with object oriented programming in python.
