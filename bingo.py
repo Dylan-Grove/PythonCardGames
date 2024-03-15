@@ -54,13 +54,13 @@ class Bingo:
         return False
     
     def isBingo(self):
-        if self.__play_mode == L:
+        if self.__play_mode == "L":
             for row in self.__rows:
                     if all(not row.isFaceUp):
                         return True
  
  
- """   
+"""
 isBingo() – returns True if the face down cards in the bingo grid match the pattern specified by the 
 play mode; returns False otherwise.  If the play mode is 'L', the face down cards must form at least one 
 line of 5 face down cards, where the line can be horizontal, vertical, or diagonal.  If the play mode is 'C', 
