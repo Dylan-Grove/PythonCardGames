@@ -14,11 +14,11 @@ class Card:
             faceUp (bool): Whether the card is face up or not.
         """
         assert rank in set("23456789tjqkaTJQKA"), "Card rank is invalid"
-        assert suit in set("shdcSHDC"),           "Card suit is invalid"
-        assert isinstance(faceUp, bool),          "faceUp must be a boolean"
+        assert suit in set("shdcSHDC"), "Card suit is invalid"
+        assert isinstance(faceUp, bool), "faceUp must be a boolean"
         
-        self.__rank   = rank.upper()
-        self.__suit   = suit.upper()
+        self.__rank = rank.upper()
+        self.__suit = suit.upper()
         self.__faceUp = faceUp
 
     def __eq__(self, anotherCard: 'Card') -> bool:
@@ -48,11 +48,15 @@ class Deck:
     """
     def __init__(self) -> None:
         self.__deck = queues.CircularQueue(52)
+        self.__deck_cards = []
     
     def __str__(self) -> str:
-        top_card = str(self.__deck.peek())
-        all_cards = ", ".join(str(card) for card in self.__getCards())
-        return f"Top card: {top_card}, All cards: {all_cards}"
+        if not self.__deck.isEmpty():
+            top_card = str(self.__deck.peek())
+            all_cards = ", ".join(str(card) for card in self.__deck_cards)
+            return f"Top card: {top_card}, All cards: {all_cards}"
+        else:
+            return "Deck is empty."
     
     def addCard(self, card: Card) -> None:
         """
@@ -66,6 +70,7 @@ class Deck:
             if card.isFaceUp():
                 card.turnOver()
             self.__deck.enqueue(card)
+            self.__deck_cards.append(card)
         else:
             raise Exception(f"Cannot add {card}, Deck is full")
 
@@ -78,6 +83,7 @@ class Deck:
         """
         if not self.__deck.isEmpty():
             dealt_card = self.__deck.dequeue()
+            self.__deck_cards.pop()
             if not dealt_card.isFaceUp():
                 dealt_card.turnOver()
             return dealt_card
@@ -95,7 +101,7 @@ class Deck:
     
     def isComplete(self) -> bool:
         """
-        Checks if the deck is complete.
+        Checks if the deck is complete by ensuring it has 52 cards and that all suit/rank combinations are in the deck with no duplicates.
 
         Returns:
             bool: True if the deck is complete, False otherwise.
@@ -105,31 +111,13 @@ class Deck:
         
         rank_set = set("23456789TJQKA")
         suit_set = set("SHDC")
-        deck_cards = self.__getCards()
 
         for suit in suit_set:
             for rank in rank_set:
-                if Card(rank, suit, True) not in deck_cards:
+                if Card(rank, suit, True) not in self.__deck_cards:
                     return False
         
         return True
-    
-    def __getCards(self) -> list:
-        """Returns a list of cards in the deck."""
-        cards = []
-        temp_queue = queues.CircularQueue(self.deckSize())
-
-        # Dequeue cards from the deck and enqueue them into a temporary queue
-        while not self.__deck.isEmpty():
-            card = self.__deck.dequeue()
-            cards.append(card)
-            temp_queue.enqueue(card)
-
-        # Restore the original order of cards in the deck
-        while not temp_queue.isEmpty():
-            self.__deck.enqueue(temp_queue.dequeue())
-
-        return cards
 
 
 def main():
@@ -144,17 +132,21 @@ def main():
     print("card1 is face up?", card1.isFaceUp())
     print("Is card1 the same as card1?", card1 == card1)
     print("Is card1 the same as card2?", card1 == card2)
-    print("Is string fart the same as card2?", card2 == "fart")
+    print("Is string test the same as card2?", card2 == "test")
     print("card1 formated as a string:", card1)
 
+
+    print("------- deck testing --------")
     deck = Deck()
     deck.addCard(card1)
-    print(str(deck))
+    print(f"added {card1} to deck1")
+    print("Deck1 cards: ",str(deck))
     deck.addCard(card2)
-    print(str(deck))
-    print(deck.dealCard())
-    print(deck.dealCard())
-    
+    print(f"added {card2} to deck1")
+    print("Deck1 cards: ",str(deck))
+    print("Dealing card: ",deck.dealCard())
+    print("Dealing card: ",deck.dealCard())
+    print("Deck1 cards: ",str(deck))
     print("making deck2...")
     deck2 = Deck()
     deck2.addCard(card1)
@@ -168,7 +160,7 @@ def main():
     complete_deck = Deck()
     for suit in suit_set:
         for rank in rank_set:
-            complete_deck.addCard(Card(rank, suit, True)) 
+            complete_deck.addCard(Card(rank, suit, False)) 
 
     print("is complete deck complete?", complete_deck.isComplete())
 
