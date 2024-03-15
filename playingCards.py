@@ -27,7 +27,9 @@ class Card:
         return False
     
     def __str__(self) -> str:
-        return f"[ {self.__rank}{self.__suit} ]"
+        if self.__faceUp:
+            return f"[ {self.__rank}{self.__suit} ]"
+        return "[    ]"
 
     def getRank(self) -> str:
         return self.__rank
